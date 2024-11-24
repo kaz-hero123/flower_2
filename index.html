@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cute Love Book 💖</title>
+  <style>
+    /* Reset Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle, #ffe6f2, #ff80bf);
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Scattered Stickers */
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://img.icons8.com/color/96/heart.png'),
+                  url('https://img.icons8.com/color/96/cat.png'),
+                  url('https://img.icons8.com/color/96/star.png'),
+                  url('https://img.icons8.com/color/96/bear.png');
+      background-size: 60px 60px;
+      background-repeat: repeat;
+      opacity: 0.2;
+      z-index: -1;
+    }
+
+    .book-container {
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .book {
+      width: 320px;
+      height: 450px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+    }
+
+    .book.open {
+      transform: rotateY(-180deg);
+    }
+
+    .cover, .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .cover {
+      background: #ff80bf;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .cover h1 {
+      font-size: 24px;
+      color: #fff;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .page {
+      background: #fff;
+      color: #444;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      transform: rotateY(180deg);
+      padding: 20px;
+      position: relative;
+    }
+
+    .page p {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    /* Stickers Inside Card */
+    .sticker {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      background-size: cover;
+    }
+
+    .sticker.heart {
+      background: url('https://img.icons8.com/color/96/heart.png') no-repeat center;
+    }
+
+    .sticker.flower {
+      background: url('https://img.icons8.com/emoji/48/flower.png') no-repeat center;
+    }
+
+    .sticker.star {
+      background: url('https://img.icons8.com/color/96/star.png') no-repeat center;
+    }
+
+    .sticker.bear {
+      background: url('https://img.icons8.com/color/96/bear.png') no-repeat center;
+    }
+
+    .nav-buttons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .nav-buttons button {
+      background: #ff80bf;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .nav-buttons button:hover {
+      background: #ff4da6;
+    }
+
+    .final-link {
+      margin-top: 15px;
+      text-decoration: none;
+      background: #ff80bf;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .final-link:hover {
+      background: #ff4da6;
+    }
+  </style>
+</head>
+<body>
+  <div class="book-container">
+    <div class="book" id="book">
+      <div class="cover">
+        <h1>Click to Open 💕</h1>
+      </div>
+      <div class="page">
+        <div id="stickerContainer">
+          <!-- Stickers dynamically added here -->
+        </div>
+        <p id="pageContent">Page 1: "Kekuatanmu bukan diukur dari seberapa keras kamu jatuh, tapi seberapa cepat kamu bangkit dan terus melangkah"</p>
+        <div class="nav-buttons">
+          <button id="prevButton" disabled>Previous</button>
+          <button id="nextButton">Next</button>
+        </div>
+        <a href="flower.html" id="finalLink" class="final-link" style="display: none;">Claim Your Surprise! 🎁</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const book = document.getElementById('book');
+    const pageContent = document.getElementById('pageContent');
+    const stickerContainer = document.getElementById('stickerContainer');
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    const finalLink = document.getElementById('finalLink');
+
+    const stickers = [
+      ['heart', 'flower'],
+      ['star', 'bear'],
+      ['heart', 'star'],
+      ['bear', 'flower'],
+      ['star', 'heart']
+    ];
+
+    const bookContent = [
+      "Kekuatanmu bukan diukur dari seberapa keras kamu jatuh, tapi seberapa cepat kamu bangkit dan terus melangkah",
+      "Kehidupan bukan tentang seberapa banyak kamu mendapat pengakuan dari orang lain, tetapi seberapa sering kamu bisa mengakui diri sendiri",
+      "Kamu tidak harus sempurna untuk berharga. Kamu sudah cukup dengan segala yang ada pada dirimu.",
+      "Terkadang kita harus melewati hujan sebelum bisa melihat pelangi. Sabar, karena keindahan akan datang setelah perjuangan.",
+      "Bersyukurlah atas setiap tantangan yang datang, karena setiap kesulitan menyimpan pelajaran yang akan memperkuatmu",
+      "Jangan biarkan pendapat orang lain tentangmu menentukan siapa dirimu. Kamu adalah siapa kamu, dan itu sudah cukup",
+      "Hidup itu seperti buku. Beberapa bab mungkin lebih sulit dari yang lain, tapi itu bukan berarti cerita kamu berakhir di sana.",
+      "Terkadang, yang kamu butuhkan hanyalah waktu untuk dirimu sendiri, untuk menemukan kedamaian dalam hati",
+      "Jangan takut untuk bermimpi besar, karena kamu lebih kuat dan lebih hebat dari yang kamu kira.",
+      "Jika kamu merasa kelelahan, itu bukan berarti kamu lemah. Itu tandanya kamu sudah berjuang dengan keras, dan saatnya untuk memberi diri sedikit ruang untuk bernafas"
+    ];
+
+    let currentPage = 0;
+
+    book.addEventListener('click', () => {
+      if (!book.classList.contains('open')) {
+        book.classList.add('open');
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      if (currentPage < bookContent.length - 1) {
+        currentPage++;
+        updatePage();
+      }
+    });
+
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePage();
+      }
+    });
+
+    function updatePage() {
+      pageContent.innerText = `Page ${currentPage + 1}: "${bookContent[currentPage]}"`;
+
+      stickerContainer.innerHTML = '';
+      stickers[currentPage % stickers.length].forEach(stickerType => {
+        const sticker = document.createElement('div');
+        sticker.className = `sticker ${stickerType}`;
+        stickerContainer.appendChild(sticker);
+      });
+
+      prevButton.disabled = currentPage === 0;
+      nextButton.disabled = currentPage === bookContent.length - 1;
+
+      finalLink.style.display = currentPage === bookContent.length - 1 ? 'block' : 'none';
+    }
+
+    updatePage();
+  </script>
+</body>
+</html>
